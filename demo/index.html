@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TraduChat — Demo chiamate tradotte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b1020;--card:#141a30;--line:#232b4a;--txt:#eef1fb;--mut:#9aa3c7;--a:#5b8cff;--b:#22d3a6;--warn:#ffb547}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.5}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.02em}
+.logo span{background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.btn{display:inline-block;border:0;cursor:pointer;font:inherit;font-weight:600;padding:12px 20px;border-radius:12px;background:linear-gradient(90deg,var(--a),#7a5bff);color:#fff;text-decoration:none}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--txt)}
+.btn:disabled{opacity:.5;cursor:default}
+.hero{text-align:center;padding:40px 0 30px}
+.pill{display:inline-block;font-size:13px;color:var(--b);border:1px solid #1f4d45;background:#0f2a26;padding:5px 12px;border-radius:99px;margin-bottom:18px}
+h1{font-size:clamp(32px,6vw,56px);line-height:1.08;letter-spacing:-.03em;font-weight:800}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mut);font-size:18px;max-width:620px;margin:16px auto 26px}
+.cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+section{padding:40px 0}
+h2{font-size:clamp(24px,4vw,34px);letter-spacing:-.02em;margin-bottom:8px;text-align:center}
+.lead{color:var(--mut);text-align:center;margin-bottom:24px}
+/* demo */
+.demo{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:16px}
+select{font:inherit;background:#0e1428;color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+label.tg{display:flex;gap:6px;align-items:center;color:var(--mut);font-size:14px}
+.phones{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.phones{grid-template-columns:1fr}}
+.phone{background:#0e1428;border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;height:420px;overflow:hidden}
+.ph-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700}
+.ph-head b{display:block;font-size:15px}
+.ph-head small{color:var(--mut);font-size:12px}
+.status{margin-left:auto;font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:#555}
+.live .dot{background:var(--b);box-shadow:0 0 0 0 rgba(34,211,166,.6);animation:pulse 1.4s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(34,211,166,0)}100%{box-shadow:0 0 0 0 rgba(34,211,166,0)}}
+.feed{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:88%;padding:10px 12px;border-radius:14px;font-size:15px;animation:in .3s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.msg.out{align-self:flex-end;background:#22305e;border-bottom-right-radius:4px}
+.msg.in{align-self:flex-start;background:#18213d;border-bottom-left-radius:4px}
+.msg .orig{display:block;font-size:12px;color:var(--mut);margin-top:4px;font-style:italic}
+.msg .tag{font-size:11px;color:var(--b);font-weight:600;display:block;margin-bottom:2px}
+.wave{display:flex;gap:3px;align-items:center;height:22px;padding:0 14px 12px}
+.wave i{width:3px;background:var(--a);border-radius:2px;height:4px;transition:height .15s}
+.empty{color:var(--mut);font-size:14px;text-align:center;margin:auto}
+.typing{align-self:flex-start;color:var(--mut);font-size:13px}
+.lat{text-align:center;color:var(--mut);font-size:13px;margin-top:12px}
+.lat b{color:var(--b)}
+/* chat demo */
+.chatbox{display:flex;gap:8px;margin-top:12px}
+.chatbox select{flex:1}
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+.card .ic{font-size:26px;margin-bottom:8px}
+.card h3{font-size:17px;margin-bottom:6px}
+.card p{color:var(--mut);font-size:15px}
+.steps .n{width:32px;height:32px;border-radius:10px;background:#1c2650;color:var(--a);display:grid;place-items:center;font-weight:800;margin-bottom:10px}
+.langs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.langs span{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:14px}
+.price{text-align:center}
+.price .big{font-size:40px;font-weight:800;margin:6px 0}
+.price.hl{border-color:var(--a);box-shadow:0 0 0 1px var(--a) inset}
+footer{color:var(--mut);font-size:13px;text-align:center;padding:30px 0 40px;border-top:1px solid var(--line);margin-top:30px}
+.note{font-size:12px;color:var(--mut);text-align:center;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="logo">TRADU<span>CHAT</span></div>
+    <a class="btn ghost" href="#demo">Prova la demo</a>
+  </nav>
+
+  <header class="hero">
+    <div class="pill">● Traduzione vocale simultanea con IA</div>
+    <h1>Chiama chiunque.<br><em>Parla la tua lingua.</em></h1>
+    <p class="sub">TraduChat traduce le tue telefonate e le tue chat in tempo reale: tu parli italiano, l'altra persona ti sente nella sua lingua. Senza interpreti, senza attese.</p>
+    <div class="cta">
+      <a class="btn" href="#demo">▶ Guarda una chiamata tradotta</a>
+      <a class="btn ghost" href="https://traduchatchat.com">Apri l'app</a>
+    </div>
+  </header>
+
+  <section id="demo">
+    <h2>Demo live</h2>
+    <p class="lead">Scegli scenario e lingua, poi avvia la chiamata. Attiva l'audio per sentire la voce tradotta.</p>
+    <div class="demo">
+      <div class="controls">
+        <select id="scen">
+          <option value="hotel">📇 Contatto</option>
+          <option value="biz">💼 Chiamata con fornitore</option>
+          <option value="help">🛟 Assistenza clienti</option>
+        </select>
+        <select id="lang">
+          <option value="en">🇬🇧 Inglese</option>
+          <option value="es">🇪🇸 Spagnolo</option>
+          <option value="fr">🇫🇷 Francese</option>
+          <option value="de">🇩🇪 Tedesco</option>
+        </select>
+        <label class="tg"><input type="checkbox" id="voice" checked> Voce</label>
+        <button class="btn" id="go">📞 Avvia chiamata</button>
+      </div>
+      <div class="phones">
+        <div class="phone" id="pA">
+          <div class="ph-head"><div class="av" style="background:#22305e">Tu</div><div><b>Tu</b><small>🇮🇹 Italiano</small></div><div class="status"><span class="dot"></span><span class="st">In attesa</span></div></div>
+          <div class="feed" id="fA"><div class="empty">Premi “Avvia chiamata”</div></div>
+          <div class="wave" id="wA"></div>
+        </div>
+        <div class="phone" id="pB">
+          <div class="ph-head"><div class="av" id="avB" style="background:#123d36">J</div><div><b id="nB">John</b><small id="lB">🇬🇧 English</small></div><div class="status"><span class="dot"></span><span class="st">In attesa</span></div></div>
+          <div class="feed" id="fB"><div class="empty">L'interlocutore sente tutto nella sua lingua</div></div>
+          <div class="wave" id="wB"></div>
+        </div>
+      </div>
+      <div class="lat" id="lat">Latenza media di traduzione: <b>—</b></div>
+    </div>
+    <p class="note">Demo simulata con dialoghi predefiniti, per mostrare l'esperienza d'uso.</p>
+  </section>
+
+  <section>
+    <h2>Come funziona</h2>
+    <p class="lead">Tre passaggi, tutto in automatico.</p>
+    <div class="grid steps">
+      <div class="card"><div class="n">1</div><h3>Parli</h3><p>Parli nella tua lingua, come in una normale telefonata o chat.</p></div>
+      <div class="card"><div class="n">2</div><h3>TraduChat ascolta e traduce</h3><p>Riconoscimento vocale, traduzione e sintesi vocale in una frazione di secondo.</p></div>
+      <div class="card"><div class="n">3</div><h3>L'altro ti capisce</h3><p>Sente la tua voce tradotta e legge i sottotitoli. Lo stesso vale al contrario.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Perché TraduChat</h2>
+    <div class="grid" style="margin-top:20px">
+      <div class="card"><div class="ic">⚡</div><h3>Tempo reale</h3><p>Conversazioni fluide, senza pause imbarazzanti tra una frase e l'altra.</p></div>
+      <div class="card"><div class="ic">💬</div><h3>Chiamate e chat</h3><p>Voce, messaggi e sottotitoli tradotti nella stessa app.</p></div>
+      <div class="card"><div class="ic">🔒</div><h3>Privacy GDPR</h3><p>Nessun uso pubblicitario dei tuoi dati. Le conversazioni restano tue.</p></div>
+      <div class="card"><div class="ic">🌍</div><h3>Per chi lavora nel mondo</h3><p>Fornitori, clienti, hotel, medici, uffici: parla con tutti.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Lingue supportate</h2>
+    <p class="lead">Le principali lingue del mondo, con rilevamento automatico.</p>
+    <div class="langs">
+      <span>🇮🇹 Italiano</span><span>🇬🇧 Inglese</span><span>🇪🇸 Spagnolo</span><span>🇫🇷 Francese</span><span>🇩🇪 Tedesco</span><span>🇵🇹 Portoghese</span><span>🇨🇳 Cinese</span><span>🇯🇵 Giapponese</span><span>🇸🇦 Arabo</span><span>🇷🇺 Russo</span><span>🇹🇷 Turco</span><span>🇮🇳 Hindi</span><span>+ molte altre</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Provalo subito</h2>
+    <p class="lead">Inizia gratis e scopri TraduChat.</p>
+    <div class="grid">
+      <div class="card price hl" style="max-width:360px;margin:0 auto;width:100%"><h3>Prova</h3><div class="big">Gratis</div><p>Minuti di prova per scoprire TraduChat.</p></div>
+    </div>
+    <div class="cta" style="margin-top:24px"><a class="btn" href="https://traduchatchat.com">Inizia ora su traduchatchat.com</a></div>
+  </section>
+
+  <footer>© 2026 TraduChat · traduchatchat.com · privacy@traduchat.com</footer>
+</div>
+
+<script>
+const LANG={en:{name:"🇬🇧 English",tts:"en-US"},es:{name:"🇪🇸 Español",tts:"es-ES"},fr:{name:"🇫🇷 Français",tts:"fr-FR"},de:{name:"🇩🇪 Deutsch",tts:"de-DE"}};
+const PEOPLE={hotel:{en:"Michael",es:"Javier",fr:"Julien",de:"Stefan"},biz:{en:"John",es:"Lucía",fr:"Pierre",de:"Klaus"},help:{en:"Emma",es:"Carlos",fr:"Sophie",de:"Anna"}};
+// [chi parla, italiano, {lingue}]  me = tu (italiano), th = interlocutore
+const S={
+hotel:[
+["th","Pronto, buongiorno. Chi parla?",{en:"Hello, good morning. Who's speaking?",es:"Diga, buenos días. ¿Quién habla?",fr:"Allô, bonjour. Qui est à l'appareil ?",de:"Hallo, guten Morgen. Wer spricht da?"}],
+["me","Buongiorno, sono Umberto di TraduChat. Ho avuto il suo contatto da un collega.",{en:"Good morning, this is Umberto from TraduChat. I got your contact from a colleague.",es:"Buenos días, soy Umberto de TraduChat. Un colega me dio su contacto.",fr:"Bonjour, c'est Umberto de TraduChat. J'ai eu votre contact par un collègue.",de:"Guten Morgen, hier ist Umberto von TraduChat. Ich habe Ihren Kontakt von einem Kollegen."}],
+["th","Ah sì, piacere. Come posso esserle utile?",{en:"Ah yes, nice to meet you. How can I help you?",es:"Ah sí, encantado. ¿En qué puedo ayudarle?",fr:"Ah oui, enchanté. En quoi puis-je vous être utile ?",de:"Ah ja, freut mich. Wie kann ich Ihnen helfen?"}],
+["me","Vorrei presentarle il nostro servizio. Possiamo fissare una breve videochiamata?",{en:"I'd like to introduce our service. Can we set up a short video call?",es:"Me gustaría presentarle nuestro servicio. ¿Podemos fijar una breve videollamada?",fr:"J'aimerais vous présenter notre service. Pouvons-nous prévoir un court appel vidéo ?",de:"Ich möchte Ihnen unseren Service vorstellen. Können wir einen kurzen Videoanruf vereinbaren?"}],
+["th","Volentieri. Le lascio la mia email, così mi manda un invito.",{en:"Gladly. I'll give you my email so you can send me an invite.",es:"Con gusto. Le dejo mi correo para que me envíe una invitación.",fr:"Volontiers. Je vous laisse mon e-mail pour que vous m'envoyiez une invitation.",de:"Gern. Ich gebe Ihnen meine E-Mail, dann schicken Sie mir eine Einladung."}],
+["me","Perfetto, le scrivo oggi stesso. Grazie e buona giornata!",{en:"Perfect, I'll write to you today. Thank you and have a nice day!",es:"Perfecto, le escribo hoy mismo. ¡Gracias y buen día!",fr:"Parfait, je vous écris aujourd'hui même. Merci et bonne journée !",de:"Perfekt, ich schreibe Ihnen noch heute. Danke und einen schönen Tag!"}]],
+biz:[
+["me","Ciao, ti chiamo per l'ordine della settimana scorsa.",{en:"Hi, I'm calling about last week's order.",es:"Hola, te llamo por el pedido de la semana pasada.",fr:"Salut, je t'appelle pour la commande de la semaine dernière.",de:"Hallo, ich rufe wegen der Bestellung von letzter Woche an."}],
+["th","Sì, la merce è partita ieri. Arriverà venerdì.",{en:"Yes, the goods shipped yesterday. They'll arrive on Friday.",es:"Sí, la mercancía salió ayer. Llegará el viernes.",fr:"Oui, la marchandise est partie hier. Elle arrivera vendredi.",de:"Ja, die Ware wurde gestern verschickt. Sie kommt am Freitag an."}],
+["me","Ottimo. Possiamo aumentare la quantità del prossimo ordine del 20%?",{en:"Great. Can we increase the next order quantity by 20%?",es:"Genial. ¿Podemos aumentar la cantidad del próximo pedido un 20%?",fr:"Parfait. Pouvons-nous augmenter la quantité de la prochaine commande de 20 % ?",de:"Super. Können wir die Menge der nächsten Bestellung um 20 % erhöhen?"}],
+["th","Nessun problema. Ti mando un nuovo preventivo oggi.",{en:"No problem. I'll send you a new quote today.",es:"Sin problema. Te envío un nuevo presupuesto hoy.",fr:"Pas de problème. Je t'envoie un nouveau devis aujourd'hui.",de:"Kein Problem. Ich schicke dir heute ein neues Angebot."}],
+["me","Perfetto, aspetto la tua email. A presto!",{en:"Perfect, I'll wait for your email. Talk soon!",es:"Perfecto, espero tu correo. ¡Hasta pronto!",fr:"Parfait, j'attends ton e-mail. À bientôt !",de:"Perfekt, ich warte auf deine E-Mail. Bis bald!"}]],
+help:[
+["th","Assistenza clienti, sono qui per aiutarla.",{en:"Customer support, I'm here to help you.",es:"Atención al cliente, estoy aquí para ayudarle.",fr:"Service client, je suis là pour vous aider.",de:"Kundenservice, ich bin hier, um Ihnen zu helfen."}],
+["me","Il mio pacco risulta consegnato, ma non l'ho ricevuto.",{en:"My package shows as delivered, but I haven't received it.",es:"Mi paquete figura como entregado, pero no lo he recibido.",fr:"Mon colis est indiqué comme livré, mais je ne l'ai pas reçu.",de:"Mein Paket wird als zugestellt angezeigt, aber ich habe es nicht erhalten."}],
+["th","Mi dispiace. Può darmi il numero dell'ordine?",{en:"I'm sorry. Can you give me the order number?",es:"Lo siento. ¿Me puede dar el número de pedido?",fr:"Je suis désolée. Pouvez-vous me donner le numéro de commande ?",de:"Das tut mir leid. Können Sie mir die Bestellnummer geben?"}],
+["me","Certo, è 4 8 2 7 1.",{en:"Sure, it's 4 8 2 7 1.",es:"Claro, es 4 8 2 7 1.",fr:"Bien sûr, c'est 4 8 2 7 1.",de:"Klar, es ist 4 8 2 7 1."}],
+["th","Grazie. Le spediamo subito un nuovo pacco, senza costi.",{en:"Thank you. We'll ship you a new package right away, free of charge.",es:"Gracias. Le enviamos un nuevo paquete enseguida, sin coste.",fr:"Merci. Nous vous envoyons un nouveau colis tout de suite, sans frais.",de:"Danke. Wir schicken Ihnen sofort kostenlos ein neues Paket."}]]
+};
+const $=id=>document.getElementById(id);
+const fA=$("fA"),fB=$("fB");let running=false,run=0;
+for(const w of ["wA","wB"])for(let i=0;i<28;i++)$(w).appendChild(document.createElement("i"));
+let waveT=null;
+function wave(id,on){clearInterval(waveT);for(const b of $("wA").children)b.style.height="4px";for(const b of $("wB").children)b.style.height="4px";if(on&&id){const bars=$(id).children;waveT=setInterval(()=>{for(const b of bars)b.style.height=(4+Math.random()*18)+"px"},120)}}
+function setLive(on,txt){for(const p of [$("pA"),$("pB")]){p.classList.toggle("live",on);p.querySelector(".st").textContent=txt}}
+function updHead(){const l=$("lang").value,s=$("scen").value,n=PEOPLE[s][l];$("nB").textContent=n;$("avB").textContent=n[0];$("lB").textContent=LANG[l].name}
+$("lang").onchange=updHead;$("scen").onchange=updHead;updHead();
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function add(feed,cls,main,orig,tag){const d=document.createElement("div");d.className="msg "+cls;d.innerHTML=(tag?`<span class="tag">${tag}</span>`:"")+main+(orig?`<span class="orig">${orig}</span>`:"");feed.appendChild(d);feed.scrollTop=feed.scrollHeight;return d}
+function speak(text,lang){return new Promise(res=>{if(!$("voice").checked||!("speechSynthesis" in window)){setTimeout(res,1400+text.length*28);return}
+ try{const u=new SpeechSynthesisUtterance(text);u.lang=lang;u.rate=1.05;u.onend=res;u.onerror=res;speechSynthesis.speak(u);setTimeout(res,9000)}catch(e){setTimeout(res,1500)}})}
+$("go").onclick=async()=>{
+ if(running){run++;running=false;try{speechSynthesis.cancel()}catch(e){};wave(null,false);setLive(false,"Chiamata chiusa");$("go").textContent="📞 Avvia chiamata";return}
+ running=true;const my=++run;$("go").textContent="⏹ Chiudi chiamata";
+ const l=$("lang").value,s=$("scen").value;fA.innerHTML="";fB.innerHTML="";const lats=[];
+ setLive(false,"Squilla…");await sleep(1100);if(my!==run)return;setLive(true,"In chiamata");
+ for(const [who,it,tr] of S[s]){if(my!==run)return;
+  const fr=tr[l];const lat=Math.round(180+Math.random()*160);lats.push(lat);
+  if(who==="me"){add(fA,"out",it,"","🎙 Tu parli");wave("wA",true);await sleep(900);if(my!==run)return;
+   const t=add(fB,"typing","traduzione…");await sleep(lat);t.remove();add(fB,"in",fr,"Originale: "+it,"🔊 Voce tradotta");wave("wB",true);await speak(fr,LANG[l].tts)}
+  else{add(fB,"out",fr,"",`🎙 ${$("nB").textContent} parla`);wave("wB",true);await sleep(900);if(my!==run)return;
+   const t=add(fA,"typing","traduzione…");await sleep(lat);t.remove();add(fA,"in",it,"Originale: "+fr,"🔊 Voce tradotta");wave("wA",true);await speak(it,"it-IT")}
+  $("lat").innerHTML=`Latenza media di traduzione: <b>${Math.round(lats.reduce((a,b)=>a+b)/lats.length)} ms</b>`;
+  await sleep(500)}
+ if(my!==run)return;wave(null,false);setLive(false,"Chiamata terminata ✓");running=false;$("go").textContent="🔁 Ripeti chiamata";
+};
+</script>
+</body>
+</html>
