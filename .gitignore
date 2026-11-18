@@ -1,3 +1,5 @@
 node_modules
 .env
 *.log
+.setup-code
+.force-setup
